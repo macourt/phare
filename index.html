@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Mystère du Phare Perdu - Une histoire fantastique</title>
+    <meta name="description" content="Une histoire mystérieuse sur un phare hanté en Bretagne">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'Montserrat', sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen p {
+            color: var(--light-color);
+            margin-top: 2rem;
+            font-family: var(--font-sans);
+        }
+
+        .lighthouse-loader {
+            width: 60px;
+            height: 90px;
+            position: relative;
+            background-color: #95a5a6;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .lighthouse-loader::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: #f1c40f;
+            border-radius: 50%;
+        }
+
+        .light-beam {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            width: 200px;
+            height: 20px;
+            background: linear-gradient(90deg, rgba(241, 196, 15, 0.8), rgba(241, 196, 15, 0));
+            transform-origin: left center;
+            animation: sweep 2s infinite alternate;
+        }
+
+        @keyframes sweep {
+            0% {
+                transform: rotate(-30deg);
+            }
+            100% {
+                transform: rotate(30deg);
+            }
+        }
+
+        /* Header */
+        .parallax-header {
+            height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 2rem;
+            max-width: 800px;
+        }
+
+        .title-reveal {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        .subtitle-reveal {
+            font-size: 1.5rem;
+            font-family: var(--font-sans);
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards 0.8s;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid white;
+            border-right: 2px solid white;
+            transform: rotate(45deg);
+            margin: -10px;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        /* Navigation */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .sticky-nav.scrolled {
+            background-color: rgba(44, 62, 80, 0.95);
+            color: white;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: var(--font-serif);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Story Section */
+        .story-section {
+            padding: 5rem 0;
+            background-color: white;
+        }
+
+        .story-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .story-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .decoration {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+
+        .line {
+            width: 80px;
+            height: 1px;
+            background-color: var(--text-light);
+        }
+
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .intro-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+        }
+
+        .story-image {
+            margin: 2rem 0;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .story-image:hover {
+            transform: scale(1.02);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .story-image.right {
+            float: right;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            max-width: 50%;
+        }
+
+        .story-image.left {
+            float: left;
+            margin-right: 2rem;
+            margin-bottom: 1rem;
+            max-width: 50%;
+        }
+
+        .story-image.full {
+            width: 100%;
+            max-width: 100%;
+            float: none;
+            margin: 3rem auto;
+        }
+
+        .dramatic-text {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-align: center;
+            margin: 2.5rem 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.8;
+            }
+        }
+
+        .moral {
+            margin: 4rem 0;
+            padding: 2rem;
+            background-color: var(--light-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .moral h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .moral blockquote {
+            font-style: italic;
+            font-size: 1.2rem;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .moral blockquote::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -1rem;
+            font-size: 4rem;
+            color: var(--accent-color);
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 5rem 0;
+            background-color: var(--light-color);
+        }
+
+        .gallery-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 5rem 0;
+            background-color: white;
+        }
+
+        .about-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: var(--font-serif);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .title-reveal {
+                font-size: 3rem;
+            }
+            
+            .subtitle-reveal {
+                font-size: 1.2rem;
+            }
+            
+            .story-image.right, 
+            .story-image.left {
+                float: none;
+                max-width: 100%;
+                margin: 2rem auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(44, 62, 80, 0.95);
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                gap: 1rem;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .title-reveal {
+                font-size: 2.5rem;
+            }
+            
+            .story-content {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .title-reveal {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .story-section, 
+            .gallery-section, 
+            .about-section {
+                padding: 3rem 0;
+            }
+            
+            .moral {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="lighthouse-loader">
+            <div class="light-beam"></div>
+        </div>
+        <p>Chargement de l'histoire...</p>
+    </div>
+
+    <header class="parallax-header">
+        <div class="header-overlay"></div>
+        <div class="header-content">
+            <h1 class="title-reveal">Le Mystère du Phare Perdu</h1>
+            <p class="subtitle-reveal">Une histoire fantastique sur la côte bretonne</p>
+            <div class="scroll-indicator">
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sticky-nav">
+        <div class="nav-container">
+            <a href="#" class="logo">Phare Perdu</a>
+            <div class="nav-links">
+                <a href="#story">L'histoire</a>
+                <a href="#gallery">Galerie</a>
+                <a href="#about">À propos</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="story" class="story-section fade-in">
+            <div class="container">
+                <div class="story-header">
+                    <h2>L'histoire</h2>
+                    <div class="decoration">
+                        <span class="dot"></span>
+                        <span class="line"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+                
+                <article class="story-content">
+                    <p class="intro-text">Sur la côte sauvage de Bretagne, un vieux phare abandonné dominait les falaises escarpées. Les villageois racontaient qu'il était hanté depuis la disparition mystérieuse de son gardien, Théo Lenoir, vingt ans plus tôt. Personne n'osait s'en approcher, sauf Léa, une jeune photographe avide d'aventure.</p>
+
+                    <div class="story-image right">
+                        <img src="https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Vieux phare abandonné sur les falaises bretonnes" loading="lazy">
+                    </div>
+
+                    <p>Un soir d'automne, alors que le vent hurlait, Léa brava les avertissements et se dirigea vers le phare. Son appareil photo en main, elle voulait capturer son atmosphère énigmatique. En poussant la porte rouillée, un grincement sinistre résonna. L'intérieur était couvert de poussière, mais étrangement, une lampe à huile brûlait encore sur une table...</p>
+
+                    <p>Soudain, un bruit de pas retentit à l'étage. Le cœur battant, Léa monta l'escalier vermoulu. Dans la salle de la lanterne, elle découvrit un vieux journal posé près d'une longue-vue. Les pages jaunies révélaient les derniers mots de Théo : <em>« Ils sont là... dans la brume. Je les ai vus. »</em></p>
+
+                    <div class="story-image left">
+                        <img src="https://images.unsplash.com/photo-1534237886190-ced735ca4b73?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Côte sauvage de Bretagne avec brume" loading="lazy">
+                    </div>
+
+                    <p>À travers la vitre, une lueur fantomatique dansa sur l'océan. Léa ajusta sa longue-vue et aperçut un navire fantôme, flottant sans équipage. Une ombre surgit derrière elle---</p>
+
+                    <p class="dramatic-text"><strong>BOUM !</strong> La porte se referma violemment. Léa se retourna, mais il n'y avait personne. Pourtant, le journal avait disparu...</p>
+
+                    <p>Au matin, les villageois la retrouvèrent endormie sur la plage, son appareil contenant une photo terrifiante : le reflet de Théo dans la vitre du phare, lui souriant.</p>
+
+                    <div class="story-image full">
+                        <img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Navire fantôme dans la brume" loading="lazy">
+                    </div>
+
+                    <p>Depuis ce jour, la lampe du phare se rallume chaque nuit...</p>
+
+                    <div class="moral">
+                        <h3>La morale de l'histoire</h3>
+                        <blockquote>
+                            <p>"La curiosité nous pousse à découvrir des vérités cachées, mais certaines ombres du passé ne demandent qu'à être respectées... Parfois, il faut savoir écouter les avertissements pour ne pas réveiller ce qui devait rester endormi."</p>
+                        </blockquote>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="gallery" class="gallery-section">
+            <div class="container">
+                <h2>Galerie</h2>
+                <div class="gallery-grid">
+                    <!-- Les images seront ajoutées dynamiquement via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2>À propos</h2>
+                <div class="about-content">
+                    <p>Cette histoire mystérieuse a été écrite pour capturer l'atmosphère énigmatique des côtes bretonnes et leurs légendes anciennes. Inspirée par des récits de phares abandonnés et de disparitions inexpliquées, elle explore le thème de la frontière entre curiosité et prudence.</p>
+                    <p>Le code de ce site a été optimisé pour une expérience de lecture fluide et immersive, avec des animations subtiles qui renforcent l'ambiance sans distraire du contenu.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span>Phare Perdu</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Partager</a>
+                </div>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Le Mystère du Phare Perdu. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading screen
+            setTimeout(function() {
+                document.querySelector('.loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.querySelector('.loading-screen').style.display = 'none';
+                }, 500);
+            }, 1500);
+
+            // Mobile menu toggle
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                this.querySelector('i').classList.toggle('fa-times');
+                this.querySelector('i').classList.toggle('fa-bars');
+            });
+
+            // Close mobile menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Sticky nav background change on scroll
+            const stickyNav = document.querySelector('.sticky-nav');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    stickyNav.classList.add('scrolled');
+                } else {
+                    stickyNav.classList.remove('scrolled');
+                }
+            });
+
+            // Intersection Observer for fade-in animations
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+
+            // Dynamic gallery
+            const galleryGrid = document.querySelector('.gallery-grid');
+            const galleryImages = [
+                { src: 'https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Phare abandonné' },
+                { src: 'https://images.unsplash.com/photo-1534237886190-ced735ca4b73?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Côte bretonne' },
+                { src: 'https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Navire fantôme' },
+                { src: 'https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Phare la nuit' },
+                { src: 'https://images.unsplash.com/photo-1534237886190-ced735ca4b73?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Falaises bretonnes' },
+                { src: 'https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', alt: 'Brume maritime' }
+            ];
+
+            galleryImages.forEach(image => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.alt;
+                img.loading = 'lazy';
+                
+                item.appendChild(img);
+                galleryGrid.appendChild(item);
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect for header
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY;
+                const parallaxHeader = document.querySelector('.parallax-header');
+                
+                if (parallaxHeader) {
+                    parallaxHeader.style.backgroundPositionY = scrollPosition * 0.5 + 'px';
+                }
+            });
+
+            // Audio effect for dramatic text (optional)
+            const dramaticText = document.querySelector('.dramatic-text');
+            if (dramaticText) {
+                dramaticText.addEventListener('click', function() {
+                    const audio = new Audio();
+                    audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-ominous-drums-561.mp3';
+                    audio.volume = 0.3;
+                    audio.play();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
